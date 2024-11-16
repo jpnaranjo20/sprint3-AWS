@@ -1,0 +1,3 @@
+fastapi dev main.py
+docker run --name ml_app_postgres -e POSTGRES_USER=anyone_ai -e POSTGRES_PASSWORD=anyone_ai -e POSTGRES_DB=ml_app -p 5432:5432 -d postgres
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
