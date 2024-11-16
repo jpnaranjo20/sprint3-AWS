@@ -19,18 +19,27 @@ def login(username: str, password: str) -> Optional[str]:
     Returns:
         Optional[str]: token if login is successful, None otherwise
     """
+    # TODO MARIA: Implement the login function
+    # Steps to Build the `login` Function:
     #  1. Construct the API endpoint URL using `API_BASE_URL` and `/login`.
-    login_url = f"{API_BASE_URL}/login"
-
     #  2. Set up the request headers with `accept: application/json` and
     #     `Content-Type: application/x-www-form-urlencoded`.
+    #  3. Prepare the data payload with fields: `grant_type`, `username`, `password`,
+    #     `scope`, `client_id`, and `client_secret`.
+    #  4. Use `requests.post()` to send the API request with the URL, headers,
+    #     and data payload.
+    #  5. Check if the response status code is `200`.
+    #  6. If successful, extract the token from the JSON response.
+    #  7. Return the token if login is successful, otherwise return `None`.
+    #  8. Test the function with various inputs.
+
+    login_url = f"{API_BASE_URL}/login"
+
     headers = {
                 "accept": "application/json",
                 "Content-Type": "application/x-www-form-urlencoded",
             }
 
-    #  3. Prepare the data payload with fields: `grant_type`, `username`, `password`,
-    #     `scope`, `client_id`, and `client_secret`.
     payload={
                     "grant_type": "",
                     "username": username,
@@ -40,18 +49,13 @@ def login(username: str, password: str) -> Optional[str]:
                     "client_secret": "",
                 }
     
-    #  4. Use `requests.post()` to send the API request with the URL, headers,
-    #     and data payload.
     resp = requests.post(login_url, data=payload, headers=headers)
 
     token = None
-    
-    #  5. Check if the response status code is `200`.
+
     if resp.status_code == 200:
-        #  6. If successful, extract the token from the JSON response.
         token = resp.json().get("access_token")
-    
-    #  7. Return the token if login is successful, otherwise return `None`.
+
     return token
 
 
@@ -133,10 +137,16 @@ def send_feedback(
     Returns:
         requests.Response: _description_
     """
-    response = None
-
+    # TODO SEBAS: Implement the send_feedback function
+    # Steps to Build the `send_feedback` Function:
     # 1. Create a dictionary with the feedback data including feedback, score,
     #    predicted_class, and image_file_name.
+    # 2. Add the token to the headers.
+    # 3. Make a POST request to the feedback endpoint.
+    # 4. Return the response.
+    response = None
+
+    #1 Crear el diccionario con los datos del feedback
     data = {
         'feedback': feedback,
         'score': score,
@@ -144,13 +154,13 @@ def send_feedback(
         'image_file_name': image_file_name
     }
 
-    # 2. Add the token to the headers.
+    #2 Crear el header con el token de autorización
     headers = {
         'Authorization': f'Bearer {token}'
     }
 
-    #3 Send the request with the headers and the data dictionary
-    # The request may fail, so you should implement error-handling.
+    #3 Enviar la solicitud con los headers y el diccionario de datos
+    # El request puede fallar, así que conviene implementar error-handling
     try:
         response = requests.post(f'{API_BASE_URL}/feedback', json=data, headers=headers)
         response.raise_for_status()
@@ -158,7 +168,6 @@ def send_feedback(
         st.error(f'An error occurred while processing the request: {e}')
         return None
 
-    # 4. Return the response.
     return response
 
 

@@ -7,6 +7,7 @@ COPY ./requirements.txt /src/requirements.txt
 WORKDIR /src
 
 RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --upgrade psycopg2
 
 COPY ./ /src/
 

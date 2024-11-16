@@ -1,12 +1,16 @@
 FROM python:3.8.13 as base
 
-
-# Append /home/app/.local/bin/ to PATH variable because
-# gunicorn is installed there.
-ENV PYTHONPATH=$PYTHONPATH:/src/
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y libhdf5-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ADD requirements.txt .
-RUN pip3 install -r requirements.txt
+
+# Upgrade pip and install Python dependencies
+RUN HDF5_DIR=/usr/lib/aarch64-linux-gnu/hdf5/serial/ \
+    pip install -r requirements.txt
 
 ENV PYTHONPATH=$PYTHONPATH:/src/
 

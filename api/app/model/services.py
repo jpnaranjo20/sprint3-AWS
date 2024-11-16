@@ -6,7 +6,9 @@ import redis
 
 from .. import settings
 
+# TODO IGNA DONE
 # Connect to Redis and assign to variable `db``
+# Make use of settings.py module to get Redis settings like host, port, etc.
 try: 
     db = redis.StrictRedis(
         host=settings.REDIS_IP,
@@ -38,27 +40,45 @@ async def model_predict(image_name):
     """
     prediction = None
     score = None
+
+    # Assign an unique ID for this job and add it to the queue.
+    # We need to assing this ID because we must be able to keep track
+    # of this particular job across all the services
+    # TODO IGNA DONE
     
-    #generate a unique ID for the job, using uuid4
-    #uuid4 is used to ensure that the generated id is secure. 
-    #a secure UUID is one that is generated using synchronization methods that ensure that no two processes can get the same UUID. 
-    #that no two processes can get the same UUID. 
+    #generamos un ID unico para el job, utilizando uuid4
+    #uuid4 se usa para asegurar que el id que se genera es seguro 
+    #Un UUID seguro es aquel que se genera utilizando métodos de sincronización que garantizan 
+    #que no haya dos procesos que puedan obtener el mismo UUID. 
     job_id = str(uuid4())
 
-    #create a job object with the job_id and the image name
+    # Create a dict with the job data we will send through Redis having the
+    # following shape:
+    # {
+    #    "id": str,
+    #    "image_name": str,
+    # }
+    # TODO IGNA DONE
+
+    #creo un objeto job con el job_id y el nombre de la imagen
     job_data = {
         "id": job_id,
         "image_name": image_name
         }
 
-    # I send the job to the service of the model, for that I insert it
-    # in the redis queue configured as an environment variable in settings
+    # Send the job to the model service using Redis
+    # Hint: Using Redis `lpush()` function should be enough to accomplish this.
+    # TODO IGNA DONE
+
+    # envio el job al servicio del modelo, para eso lo inserto
+    # en la cola de redis configurada como variable de entorno en settings
     db.lpush(settings.REDIS_QUEUE,json.dumps(job_data))
 
     # Loop until we received the response from our ML model
     while True:
         # Attempt to get model predictions using job_id
         # Hint: Investigate how can we get a value using a key from Redis
+        # TODO IGNA DONE
         output = db.get(job_id)
 
         # Check if the text was correctly processed by our ML model
